@@ -6,6 +6,10 @@ Integrar todas las vistas arquitectónicas desarrolladas a lo largo del curso (n
 
 ---
 
+## 📘 Guía paso a paso
+
+Antes de armar el tablero, revise la [**Guía Paso a Paso: Integración de Vistas de Arquitectura**](clase/guia_paso_a_paso_integracion.md). Incluye la metodología de 5 pasos para pasar de un inventario de vistas sueltas a un tablero conectado con narrativa, un ejemplo completo construido paso a paso sobre el caso de FarmApp (incluyendo una tabla para verificar que ningún elemento quede huérfano), y una tabla de errores comunes.
+
 ## 💊 Caso base de referencia: FarmApp (Cadena de Farmacias con E-Commerce)
 
 FarmApp es una cadena nacional de farmacias que ha incorporado un sistema de e-commerce integrado a su red de puntos físicos. La plataforma permite a los clientes realizar pedidos de medicamentos, consultar disponibilidad, recibir recomendaciones personalizadas y hacer pagos digitales. Internamente se sincronizan sistemas como el POS, el CRM, el inventario y el sistema de logística de entrega. Integrar todas las vistas arquitectónicas de FarmApp permite visualizar cómo interactúan los diferentes niveles (negocio, datos, aplicaciones, infraestructura y seguridad) y cómo se alinean para brindar un servicio consistente y seguro.
@@ -28,9 +32,16 @@ FarmApp es una cadena nacional de farmacias que ha incorporado un sistema de e-c
 
 Durante la clase se espera que el equipo:
 
-- Organice todas las vistas del caso base de FarmApp en un tablero visual (papel, Miro, draw.io).
-- Analice cómo se conectan entre sí y qué relaciones hay entre capas (negocio → aplicaciones → infraestructura).
-- Reciba retroalimentación del docente.
+Siga la metodología de 5 pasos de la [guía paso a paso](clase/guia_paso_a_paso_integracion.md) para armar el tablero integrado de FarmApp:
+
+1. Organice las 5 vistas como capas del tablero.
+2. Ubique los elementos de cada vista dentro de su capa, sin conectar todavía.
+3. Trace las relaciones verticales entre capas para un proceso de negocio a la vez.
+4. Redacte la narrativa que explique el porqué de esas conexiones.
+5. Revise que ningún elemento quede huérfano, con la [checklist de autoevaluación](clase/guia_paso_a_paso_integracion.md#4-checklist-de-autoevaluación-antes-de-entregar).
+
+- Use papel, Miro o draw.io para el tablero visual.
+- Reciba retroalimentación del docente y registre avances en `clase/notas.md` (use la [plantilla de notas](plantillas/plantilla_notas.md)).
 
 ---
 
@@ -38,28 +49,37 @@ Durante la clase se espera que el equipo:
 
 Después de la clase, el equipo debe:
 
-- Realizar la misma integración para su cliente real, combinando todos los entregables previos.
+- Realizar la misma integración para su cliente real, combinando todos los entregables previos, siguiendo los mismos 5 pasos de la metodología.
 - Documentar cómo estas vistas se articulan entre sí y qué decisiones fueron clave.
-- Realizar una reflexión crítica sobre la coherencia de la arquitectura.
-- Investigar ejemplos reales de documentación de vistas en empresas similares.
+- Redactar el informe en `entrega/informe.md` usando la [plantilla de informe del taller](plantillas/plantilla_informe_taller.md), con una reflexión crítica sobre la coherencia de la arquitectura.
+- Investigar ejemplos reales de documentación de vistas en empresas similares, y registrar las fuentes en `entrega/referencias.md` con la [plantilla de referencias](plantillas/plantilla_referencias.md).
 
 ---
 
 ## 📁 Estructura esperada del repositorio
 
-```
+```text
 taller-07-integracion-vistas/
 ├── README.md
 ├── clase/
+│   ├── guia_paso_a_paso_integracion.md   # Metodología de 5 pasos y ejemplo guiado
 │   ├── tablero-farmapp.drawio
-│   └── notas.md
+│   └── notas.md                          # Ver plantillas/plantilla_notas.md
 ├── entrega/
 │   ├── tablero-integrado-cliente.drawio
-│   ├── informe.md
-│   └── referencias.md
+│   ├── informe.md                        # Ver plantillas/plantilla_informe_taller.md
+│   └── referencias.md                    # Ver plantillas/plantilla_referencias.md
+└── plantillas/
+    ├── plantilla_informe_taller.md
+    ├── plantilla_notas.md
+    └── plantilla_referencias.md
 ```
 
 ---
+
+## ⚠️ Errores comunes
+
+Antes de entregar, compare su tablero contra los errores más frecuentes (vistas sin conectar, seguridad omitida, narrativa que solo describe el diagrama) documentados en la [sección 3 de la guía paso a paso](clase/guia_paso_a_paso_integracion.md#3-errores-comunes-a-evitar).
 
 ## 📤 Entregables
 
