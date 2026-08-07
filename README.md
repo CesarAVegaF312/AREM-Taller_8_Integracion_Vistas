@@ -6,7 +6,7 @@ Integrar todas las vistas arquitectónicas desarrolladas a lo largo del curso (n
 
 ---
 
-## 🧪 Caso base de referencia: FarmApp (Cadena de Farmacias con E-Commerce)
+## 💊 Caso base de referencia: FarmApp (Cadena de Farmacias con E-Commerce)
 
 FarmApp es una cadena nacional de farmacias que ha incorporado un sistema de e-commerce integrado a su red de puntos físicos. La plataforma permite a los clientes realizar pedidos de medicamentos, consultar disponibilidad, recibir recomendaciones personalizadas y hacer pagos digitales. Internamente se sincronizan sistemas como el POS, el CRM, el inventario y el sistema de logística de entrega. Integrar todas las vistas arquitectónicas de FarmApp permite visualizar cómo interactúan los diferentes niveles (negocio, datos, aplicaciones, infraestructura y seguridad) y cómo se alinean para brindar un servicio consistente y seguro.
 
