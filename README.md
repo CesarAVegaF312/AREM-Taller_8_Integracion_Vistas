@@ -1,8 +1,8 @@
-# 🛠️ Taller 7: Integración de Vistas de Arquitectura
+# 🛠️ Taller 8: Integración de Vistas de Arquitectura
 
 ## 🎯 Objetivo
 
-Integrar todas las vistas arquitectónicas desarrolladas a lo largo del curso (negocio, información, aplicaciones, infraestructura y seguridad) en una narrativa visual coherente, identificando cómo se relacionan y soportan los objetivos del cliente.
+Integrar todas las vistas arquitectónicas desarrolladas a lo largo del curso (negocio, información, aplicaciones, infraestructura y seguridad) en una narrativa visual coherente, identificando cómo se relacionan y soportan los objetivos del cliente. Con el cliente real, la integración debe incluir tanto el estado actual (AS-IS) como la arquitectura objetivo (TO-BE) propuesta en el Taller 7 (Opportunities & Solutions).
 
 ---
 
@@ -49,7 +49,7 @@ Siga la metodología de 5 pasos de la [guía paso a paso](clase/guia_paso_a_paso
 
 Después de la clase, el equipo debe:
 
-- Realizar la misma integración para su cliente real, combinando todos los entregables previos, siguiendo los mismos 5 pasos de la metodología.
+- Realizar la misma integración para su cliente real, combinando todos los entregables previos —incluyendo el TO-BE de Aplicaciones y Tecnología del Taller 7—, siguiendo los mismos 5 pasos de la metodología.
 - Documentar cómo estas vistas se articulan entre sí y qué decisiones fueron clave.
 - Redactar el informe en `entrega/informe.md` usando la [plantilla de informe del taller](plantillas/plantilla_informe_taller.md), con una reflexión crítica sobre la coherencia de la arquitectura.
 - Investigar ejemplos reales de documentación de vistas en empresas similares, y registrar las fuentes en `entrega/referencias.md` con la [plantilla de referencias](plantillas/plantilla_referencias.md).
@@ -59,7 +59,7 @@ Después de la clase, el equipo debe:
 ## 📁 Estructura esperada del repositorio
 
 ```text
-taller-07-integracion-vistas/
+taller-08-integracion-vistas/
 ├── README.md
 ├── clase/
 │   ├── guia_paso_a_paso_integracion.md   # Metodología de 5 pasos y ejemplo guiado

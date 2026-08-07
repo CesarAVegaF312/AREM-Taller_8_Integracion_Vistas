@@ -146,4 +146,4 @@ Se verifica que cada elemento del hilo tenga al menos una conexión hacia la cap
 
 ---
 
-_Esta guía hace parte del Taller 7 de Integración de Vistas de Arquitectura — curso Arquitectura Empresarial, Universidad de La Sabana._
+_Esta guía hace parte del Taller 8 de Integración de Vistas de Arquitectura — curso Arquitectura Empresarial, Universidad de La Sabana._
