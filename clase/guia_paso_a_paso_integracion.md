@@ -146,4 +146,37 @@ Se verifica que cada elemento del hilo tenga al menos una conexión hacia la cap
 
 ---
 
+## Vista ArchiMate equivalente
+
+Este taller **es**, en esencia, lo que ArchiMate hace de forma nativa (ver la [Guía de Notación ArchiMate](https://github.com/CesarAVegaF312/AREM-ArchiMate/blob/main/guia_notacion_archimate.md)): mostrar negocio, aplicación y tecnología en una sola vista conectada. El tablero de capas del Paso 2 y el hilo conectado del Paso 3 son, literalmente, un diagrama ArchiMate multi-capa — solo que hasta ahora se construyó con formas genéricas en vez de con la notación estándar.
+
+```mermaid
+flowchart TD
+    subgraph negocio["Negocio"]
+        compra["Compra Online"]
+    end
+    subgraph aplicacion["Aplicación"]
+        ecommerce["Plataforma E-commerce"]
+        producto[("Producto")]
+    end
+    subgraph tecnologia["Tecnología"]
+        nube["Nube Híbrida"]
+    end
+
+    compra -->|"realizado por"| ecommerce
+    ecommerce -->|"accede a"| producto
+    ecommerce -->|"asignado a"| nube
+
+    classDef negocio fill:#ffff99,color:#000,stroke:#cccc00;
+    classDef aplicacion fill:#99ccff,color:#000,stroke:#3366cc;
+    classDef tecnologia fill:#ccffcc,color:#000,stroke:#339933;
+    class compra negocio
+    class ecommerce,producto aplicacion
+    class nube tecnologia
+```
+
+Si su equipo construyó el tablero del Taller 7 con la notación ArchiMate en vez de formas libres, este diagrama ya es la vista final que necesita — no hay que redibujar nada dos veces.
+
+---
+
 _Esta guía hace parte del Taller 8 de Integración de Vistas de Arquitectura — curso Arquitectura Empresarial, Universidad de La Sabana._
