@@ -10,6 +10,12 @@ Integrar todas las vistas arquitectónicas desarrolladas a lo largo del curso (n
 
 Antes de armar el tablero, revise la [**Guía Paso a Paso: Integración de Vistas de Arquitectura**](clase/guia_paso_a_paso_integracion.md). Incluye la metodología de 5 pasos para pasar de un inventario de vistas sueltas a un tablero conectado con narrativa, un ejemplo completo construido paso a paso sobre el caso de FarmApp (incluyendo una tabla para verificar que ningún elemento quede huérfano), y una tabla de errores comunes.
 
+### 🖼️ Versión visual: Tablero de Integración de Vistas
+
+[`clase/visualizacion-integracion-vistas.html`](clase/visualizacion-integracion-vistas.html) es una página interactiva autocontenida: un tablero de las 5 capas de FarmApp (negocio, aplicaciones, información, infraestructura, seguridad) que se alterna entre "capas sueltas" (Paso 2 de la guía) y el hilo de negocio **Compra Online** trazado de punta a punta (Paso 3), con la narrativa real de cada conexión al hacer clic sobre ella y la tabla completa de verificación de elementos huérfanos (Paso 5). GitHub no la renderiza interactiva desde la vista de archivo; para verla:
+- Descargue el archivo y ábralo con doble clic (funciona sin conexión, es HTML plano), o
+- Pegue esta URL en [htmlpreview.github.io](https://htmlpreview.github.io/): `https://raw.githubusercontent.com/CesarAVegaF312/AREM-Taller_8_Integracion_Vistas/main/clase/visualizacion-integracion-vistas.html`
+
 ## 💊 Caso base de referencia: FarmApp (Cadena de Farmacias con E-Commerce)
 
 FarmApp es una cadena nacional de farmacias que ha incorporado un sistema de e-commerce integrado a su red de puntos físicos. La plataforma permite a los clientes realizar pedidos de medicamentos, consultar disponibilidad, recibir recomendaciones personalizadas y hacer pagos digitales. Internamente se sincronizan sistemas como el POS, el CRM, el inventario y el sistema de logística de entrega. Integrar todas las vistas arquitectónicas de FarmApp permite visualizar cómo interactúan los diferentes niveles (negocio, datos, aplicaciones, infraestructura y seguridad) y cómo se alinean para brindar un servicio consistente y seguro.

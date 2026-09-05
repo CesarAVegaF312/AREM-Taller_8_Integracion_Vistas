@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Integración de vistas · Tablero de 5 capas de FarmApp · AREM</title>
+<style>
+  :root{
+    --paper:#F2F1EA;
+    --ink:#14263C;
+    --ink-soft:#3B4C5E;
+    --threat:#B4552B;
+    --control:#1C7150;
+    --steel:#5F7387;
+    --rule:#C9C6B8;
+    --card:#FBFAF6;
+    --grid:rgba(20,38,60,.055);
+    --mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
+    --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none !important} }
+
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--sans); font-size:17px; line-height:1.55;
+    background-image:
+      repeating-linear-gradient(0deg, var(--grid) 0 1px, transparent 1px 28px),
+      repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px 28px);
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+
+  /* ---------- estructura de lámina ---------- */
+  .sheet{border:1px solid var(--rule);background:rgba(251,250,246,.72);margin:34px 0;position:relative}
+  .sheet::before,.sheet::after{content:"";position:absolute;width:13px;height:13px;border:1px solid var(--steel);opacity:.5}
+  .sheet::before{top:-7px;left:-7px;border-right:0;border-bottom:0}
+  .sheet::after{bottom:-7px;right:-7px;border-left:0;border-top:0}
+  .sheet-inner{padding:34px}
+  @media(max-width:720px){ .sheet-inner{padding:20px} .wrap{padding:0 14px} }
+
+  .ref{font-family:var(--mono);font-size:11.5px;color:var(--steel);letter-spacing:.04em}
+
+  h1{font-size:clamp(34px,6vw,58px);line-height:1.03;letter-spacing:-.025em;font-weight:800;margin:.1em 0 .25em}
+  h2{font-size:clamp(24px,3.4vw,34px);line-height:1.12;letter-spacing:-.018em;font-weight:800;margin:0 0 6px}
+  h3{font-size:19px;letter-spacing:-.01em;font-weight:700;margin:0 0 6px}
+  .lede{font-size:19px;color:var(--ink-soft);max-width:66ch;margin:0}
+  p{max-width:70ch}
+  a{color:var(--threat)}
+
+  /* ---------- cabecera ---------- */
+  header.top{border-bottom:1px solid var(--rule);background:var(--ink);color:#EAF0F4}
+  header.top .wrap{display:flex;justify-content:space-between;align-items:baseline;padding-top:14px;padding-bottom:14px;gap:16px;flex-wrap:wrap}
+  header.top .ref{color:#8CA6BA}
+  nav.jump{display:flex;gap:18px;flex-wrap:wrap}
+  nav.jump a{color:#EAF0F4;text-decoration:none;font-family:var(--mono);font-size:12px;border-bottom:1px solid transparent;padding-bottom:2px}
+  nav.jump a:hover,nav.jump a:focus-visible{border-bottom-color:#E0A06B}
+
+  .hero{padding:52px 0 8px}
+  .hero h1{max-width:18ch}
+
+  /* ---------- diagrama ---------- */
+  .lab{display:grid;grid-template-columns:1.55fr 1fr;gap:0}
+  @media(max-width:940px){ .lab{grid-template-columns:1fr} }
+  .canvas{border-right:1px solid var(--rule);padding:22px}
+  @media(max-width:940px){ .canvas{border-right:0;border-bottom:1px solid var(--rule)} }
+  .panel{padding:22px;min-width:0}
+
+  .switch{display:flex;gap:0;margin-bottom:16px;border:1px solid var(--ink);width:fit-content}
+  .switch button{
+    font-family:var(--mono);font-size:12px;letter-spacing:.03em;padding:7px 14px;
+    background:transparent;border:0;color:var(--ink);cursor:pointer;border-right:1px solid var(--ink)
+  }
+  .switch button:last-child{border-right:0}
+  .switch button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+  .switch button:focus-visible{outline:2px solid var(--threat);outline-offset:2px}
+
+  svg.board{width:100%;height:auto;display:block}
+  svg.board text{font-family:var(--sans);fill:var(--ink)}
+  svg.board .nlabel{font-size:12px;font-weight:700}
+  svg.board .nsub{font-size:9px;fill:#D8E1E8;font-family:var(--mono)}
+  svg.board .bandlabel{font-size:10.5px;font-family:var(--mono);letter-spacing:.08em;font-weight:700}
+  svg.board .clabel{font-size:10.5px;font-family:var(--mono);fill:var(--ink-soft)}
+  .hit{cursor:pointer}
+  .hit:focus-visible{outline:2px solid var(--threat);outline-offset:2px}
+  .connline{stroke:var(--steel);stroke-width:1.6;fill:none;opacity:.85}
+  .connline.protege{stroke-dasharray:5 4}
+  .connline.sel{stroke:var(--threat);stroke-width:3;opacity:1}
+  .connhit{stroke:transparent;stroke-width:18;fill:none;cursor:pointer}
+  .node-box{transition:opacity .15s}
+  .node-box.dim{opacity:.32}
+  .node-box.sel-ring{stroke:var(--threat);stroke-width:3}
+
+  /* ---------- panel de narrativa ---------- */
+  .panel .empty{border:1px dashed var(--rule);padding:18px;color:var(--ink-soft);font-size:15px}
+  .conntitle{font-family:var(--mono);font-size:12px;color:var(--threat);letter-spacing:.03em;margin-bottom:6px}
+  .connnote{border-top:2px solid var(--ink);padding-top:12px}
+  .connnote p{margin:0 0 12px;font-size:15px;line-height:1.6;color:var(--ink-soft)}
+  .connnote .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+  .connnote .chip{font-family:var(--mono);font-size:11px;padding:4px 9px;border:1px solid var(--rule);color:var(--ink-soft);background:var(--card)}
+  .connnote .src{font-size:13px;color:var(--steel);border-left:3px solid var(--threat);padding-left:10px;margin-top:10px}
+
+  /* ---------- tablas ---------- */
+  table{border-collapse:collapse;width:100%;font-size:14.5px}
+  th,td{border:1px solid var(--rule);padding:9px 11px;text-align:left;vertical-align:top}
+  thead th{background:var(--ink);color:var(--paper);font-weight:700;font-size:13px}
+  .verif td.mark{text-align:center;font-family:var(--mono);font-weight:700;white-space:nowrap}
+  .verif td.ok{color:var(--control)}
+  .verif td.orphan{color:var(--threat);background:rgba(180,85,43,.08)}
+  .verif th.el{width:24%}
+  .tablewrap{overflow-x:auto}
+
+  /* ---------- piezas ---------- */
+  .cols{display:grid;gap:20px}
+  .c2{grid-template-columns:repeat(2,1fr)}
+  .c5{grid-template-columns:repeat(5,1fr)}
+  @media(max-width:860px){ .c2{grid-template-columns:1fr} .c5{grid-template-columns:repeat(2,1fr)} }
+  .block{border:1px solid var(--rule);background:var(--card);padding:18px}
+  .block.bizline{border-top:3px solid var(--ink)}
+  .block.appline{border-top:3px solid var(--steel)}
+  .block.infoline{border-top:3px solid var(--control)}
+  .block.infraline{border-top:3px solid var(--ink-soft)}
+  .block.secline{border-top:3px solid var(--threat)}
+  .block h3{font-size:15px}
+  .block p{font-size:14px;color:var(--ink-soft);margin:0}
+  .block ul{margin:6px 0 0;padding-left:18px;font-size:14px;color:var(--ink-soft)}
+  .block li{margin-bottom:3px}
+
+  .steps{counter-reset:s;display:grid;gap:12px}
+  .step{display:flex;gap:14px;border:1px solid var(--rule);background:var(--card);padding:14px 16px}
+  .step .n{font-family:var(--mono);font-size:13px;color:var(--threat);flex:none;padding-top:2px}
+  .step p{margin:4px 0 0;font-size:15px;color:var(--ink-soft)}
+
+  .checklist{display:grid;gap:8px;list-style:none;margin:0;padding:0}
+  .checklist li{display:flex;gap:10px;border:1px solid var(--rule);background:var(--card);padding:10px 14px;font-size:15px;color:var(--ink-soft)}
+  .checklist li::before{content:"☐";flex:none;font-family:var(--mono);color:var(--threat);font-size:16px}
+
+  .callout{border:1px solid var(--ink);background:var(--ink);color:#EAF0F4;padding:20px 22px}
+  .callout p{color:#C6D6E1;margin:0;max-width:78ch}
+  .callout strong{color:#E0A06B}
+
+  .note{font-size:14px;color:var(--steel);max-width:78ch}
+  footer{border-top:1px solid var(--rule);margin-top:40px;padding:26px 0 50px}
+  footer p{font-family:var(--mono);font-size:12px;color:var(--steel)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <span class="ref">AREM · Módulo 8 · Hoja de integración de vistas</span>
+    <nav class="jump" aria-label="Secciones">
+      <a href="#tablero">Tablero interactivo</a>
+      <a href="#metodologia">Metodología</a>
+      <a href="#huerfanos">Verificación de huérfanos</a>
+      <a href="#errores">Errores comunes</a>
+      <a href="#checklist">Checklist</a>
+      <a href="#archimate">Vista ArchiMate</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="hero">
+    <p class="ref">Universidad de La Sabana · Arquitectura Empresarial</p>
+    <h1>Cinco vistas sueltas no son una arquitectura. Un hilo trazado sí.</h1>
+    <p class="lede">Integrar vistas no es dibujar negocio, aplicaciones, información, infraestructura y seguridad una encima de otra: es conectar, elemento por elemento, cómo un proceso real de negocio atraviesa las cinco capas. Esta hoja usa el caso de FarmApp. Empiece por el tablero: primero véalo con las capas sueltas, después trace el hilo de <strong>Compra Online</strong> y haga clic en cada conexión.</p>
+  </section>
+
+  <!-- ============ TABLERO ============ -->
+  <section class="sheet" id="tablero">
+    <div class="lab">
+      <div class="canvas">
+        <div class="switch" role="group" aria-label="Elegir estado del tablero">
+          <button type="button" data-mode="loose" aria-pressed="true">Capas sueltas</button>
+          <button type="button" data-mode="traced" aria-pressed="false">Hilo de Compra Online trazado</button>
+        </div>
+        <h2 id="modeName">Paso 2 · Elementos ubicados, sin conectar</h2>
+        <p class="note" id="modeDesc" style="margin:2px 0 14px">Los 15 elementos de las 5 vistas de FarmApp, transcritos de los talleres 1 a 6 dentro de su capa. Todavía no hay ninguna relación trazada.</p>
+        <div id="diagram"></div>
+        <p class="note" style="margin-top:12px" id="modeFoot">Cambie a "Hilo de Compra Online trazado" para ver cómo un solo proceso de negocio conecta las 5 capas de punta a punta.</p>
+      </div>
+      <div class="panel">
+        <p class="ref">Narrativa de la conexión</p>
+        <div id="detail">
+          <div class="empty">Este es el punto de partida del tablero (Paso 2 de la guía): un inventario de elementos por capa, todavía sin relaciones. Active "Hilo de Compra Online trazado" y haga clic en una conexión resaltada para ver por qué existe.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ METODOLOGÍA ============ -->
+  <section class="sheet" id="metodologia">
+    <div class="sheet-inner">
+      <p class="ref">01 · El método</p>
+      <h2>Metodología en 5 pasos</h2>
+      <p class="lede" style="margin-bottom:18px">La misma secuencia que produjo el tablero de arriba, aplicada a FarmApp y repetible con cualquier cliente real.</p>
+      <div class="steps">
+        <div class="step"><span class="n">Paso 1</span><div><h3>Organizar las vistas en capas</h3><p>Defina las 5 capas del tablero (negocio, aplicaciones, información, infraestructura, seguridad), una debajo de otra.</p></div></div>
+        <div class="step"><span class="n">Paso 2</span><div><h3>Ubicar los elementos de cada vista dentro de su capa</h3><p>Transcriba lo ya definido en los talleres anteriores, sin conectar todavía. Es el estado "capas sueltas" del tablero.</p></div></div>
+        <div class="step"><span class="n">Paso 3</span><div><h3>Trazar relaciones verticales entre capas</h3><p>Para un proceso de negocio a la vez, conecte cada elemento con la aplicación que lo soporta, la aplicación con su infraestructura, y ambas con la información y el control de seguridad que usan.</p></div></div>
+        <div class="step"><span class="n">Paso 4</span><div><h3>Redactar la narrativa de coherencia</h3><p>Explique en texto por qué esas conexiones tienen sentido y qué decisiones de talleres anteriores las originaron. Es el texto que aparece en el panel al hacer clic en cada conexión.</p></div></div>
+        <div class="step"><span class="n">Paso 5</span><div><h3>Revisar consistencia</h3><p>Verifique que ningún elemento quede "huérfano" (sin conexión hacia arriba ni hacia abajo) y que la narrativa cubra las 5 capas. Ver la tabla de verificación más abajo.</p></div></div>
+      </div>
+
+      <h3 style="margin:26px 0 10px">Las 5 capas de FarmApp</h3>
+      <div class="cols c5">
+        <div class="block bizline"><h3>Negocio</h3><ul><li>Compra Online</li><li>Prescripción</li><li>Despacho</li></ul></div>
+        <div class="block appline"><h3>Aplicaciones</h3><ul><li>App Móvil</li><li>Plataforma E-commerce</li><li>Sistema POS</li><li>CRM</li></ul></div>
+        <div class="block infoline"><h3>Información</h3><ul><li>Producto</li><li>Cliente</li><li>Pedido</li><li>Descuento</li></ul></div>
+        <div class="block infraline"><h3>Infraestructura</h3><ul><li>Servidores Regionales</li><li>Nube Híbrida</li><li>Base de Datos Replicada</li></ul></div>
+        <div class="block secline"><h3>Seguridad</h3><ul><li>Control de acceso por rol</li><li>Cifrado de datos personales</li><li>Monitoreo de fraude</li></ul></div>
+      </div>
+
+      <div class="callout" style="margin-top:20px">
+        <p><strong>El hilo completo, en una frase:</strong> "El proceso de Compra Online se apoya en la Plataforma E-commerce y en la App Móvil, priorizadas porque la mayoría de las compras de FarmApp ya ocurren desde dispositivos móviles. Ambas comparten las mismas entidades de información (Producto, Cliente, Pedido, Descuento) para evitar inconsistencias de inventario entre canales. Corren sobre la Nube Híbrida con Base de Datos Replicada — decisión tomada en el Taller 4 para tolerar picos de demanda en campañas promocionales. El cifrado de datos personales y el monitoreo de fraude se aplican en este punto porque el proceso involucra pago electrónico, el activo más sensible identificado en el Taller 5."</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HUÉRFANOS ============ -->
+  <section class="sheet" id="huerfanos">
+    <div class="sheet-inner">
+      <p class="ref">02 · Paso 5 de la guía</p>
+      <h2>Verificación de elementos huérfanos</h2>
+      <p class="lede" style="margin-bottom:18px">Un elemento sin ninguna conexión hacia arriba ni hacia abajo está huérfano: o sobra en el tablero, o falta trazar su relación. Con solo el hilo de Compra Online trazado, 9 de los 15 elementos de FarmApp quedan conectados y 6 quedan sueltos — no porque estén de más, sino porque su propio hilo de negocio (Prescripción, Despacho) todavía no se ha trazado.</p>
+
+      <div class="tablewrap">
+      <table class="verif">
+        <thead>
+          <tr><th class="el">Elemento</th><th style="width:16%">Capa</th><th style="width:20%">¿Conectado en el hilo de Compra Online?</th><th>Estado</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Compra Online</td><td>Negocio</td><td class="mark ok">✅ sí</td><td>Conectado — origen del hilo</td></tr>
+          <tr><td>Prescripción</td><td>Negocio</td><td class="mark orphan">❌ no</td><td>Huérfano — su hilo aún no se traza (pendiente, no es un error)</td></tr>
+          <tr><td>Despacho</td><td>Negocio</td><td class="mark orphan">❌ no</td><td>Huérfano — su hilo aún no se traza (pendiente, no es un error)</td></tr>
+          <tr><td>App Móvil</td><td>Aplicaciones</td><td class="mark ok">✅ sí</td><td>Conectado — soporta Compra Online, va a Nube Híbrida</td></tr>
+          <tr><td>Plataforma E-commerce</td><td>Aplicaciones</td><td class="mark ok">✅ sí</td><td>Conectado — soporta Compra Online, hacia información, infraestructura y seguridad</td></tr>
+          <tr><td>Sistema POS</td><td>Aplicaciones</td><td class="mark orphan">❌ no</td><td>Huérfano en este hilo — pertenece al hilo de Despacho en tienda física</td></tr>
+          <tr><td>CRM</td><td>Aplicaciones</td><td class="mark orphan">❌ no</td><td>Huérfano en este hilo — no quedó conectado a Compra Online en la guía</td></tr>
+          <tr><td>Producto</td><td>Información</td><td class="mark ok">✅ sí</td><td>Conectado — accedido por la Plataforma E-commerce</td></tr>
+          <tr><td>Cliente</td><td>Información</td><td class="mark ok">✅ sí</td><td>Conectado — accedido por la Plataforma E-commerce</td></tr>
+          <tr><td>Pedido</td><td>Información</td><td class="mark ok">✅ sí</td><td>Conectado — accedido por la Plataforma E-commerce</td></tr>
+          <tr><td>Descuento</td><td>Información</td><td class="mark ok">✅ sí</td><td>Conectado — accedido por la Plataforma E-commerce</td></tr>
+          <tr><td>Servidores Regionales</td><td>Infraestructura</td><td class="mark orphan">❌ no</td><td>Huérfano en este hilo — Compra Online corre sobre Nube Híbrida, no sobre servidores regionales</td></tr>
+          <tr><td>Nube Híbrida</td><td>Infraestructura</td><td class="mark ok">✅ sí</td><td>Conectado — recibe App Móvil y E-commerce, alimenta la Base de Datos Replicada</td></tr>
+          <tr><td>Base de Datos Replicada</td><td>Infraestructura</td><td class="mark ok">✅ sí</td><td>Conectado — soportado por Nube Híbrida</td></tr>
+          <tr><td>Control de acceso por rol</td><td>Seguridad</td><td class="mark orphan">❌ no</td><td>Huérfano en este hilo — la guía solo enlaza cifrado y monitoreo de fraude a Compra Online</td></tr>
+          <tr><td>Cifrado de datos personales</td><td>Seguridad</td><td class="mark ok">✅ sí</td><td>Conectado — protege el pago electrónico del proceso</td></tr>
+          <tr><td>Monitoreo de fraude</td><td>Seguridad</td><td class="mark ok">✅ sí</td><td>Conectado — protege el pago electrónico del proceso</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="note" style="margin-top:12px">Los 6 elementos huérfanos no se descartan: quedan documentados como trabajo pendiente. La guía es explícita en que "el mismo método se repite después para Prescripción y Despacho" — cuando esos hilos se tracen, Sistema POS, Servidores Regionales y Control de acceso por rol probablemente dejen de estar sueltos.</p>
+    </div>
+  </section>
+
+  <!-- ============ ERRORES COMUNES ============ -->
+  <section class="sheet" id="errores">
+    <div class="sheet-inner">
+      <p class="ref">03 · Antes de repetirlo con el cliente real</p>
+      <h2>Errores comunes a evitar</h2>
+      <table style="margin-top:14px">
+        <thead><tr><th style="width:28%">Error frecuente</th><th style="width:30%">Por qué es un problema</th><th>Cómo corregirlo</th></tr></thead>
+        <tbody>
+          <tr><td>Dibujar las 5 vistas por separado sin conectarlas</td><td>El tablero se convierte en 5 diagramas pegados, no en una arquitectura integrada</td><td>Trace explícitamente las relaciones verticales entre capas (Paso 3)</td></tr>
+          <tr><td>Conectar aplicaciones e infraestructura pero omitir la vista de seguridad</td><td>La seguridad queda como un anexo en vez de una decisión arquitectónica</td><td>Para cada hilo de negocio, identifique qué control de seguridad protege ese flujo</td></tr>
+          <tr><td>Narrativa que describe el diagrama en vez de justificar las decisiones</td><td>No aporta valor sobre lo que ya se ve en el tablero</td><td>Explique el "por qué" (ej. por qué esa infraestructura, por qué esas entidades), no el "qué"</td></tr>
+          <tr><td>Elementos de talleres anteriores que no aparecen en el tablero integrado</td><td>Da la impresión de que el trabajo previo se descartó</td><td>Revise que cada entregable de los Talleres 1–6 tenga un lugar en el tablero final</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ CHECKLIST ============ -->
+  <section class="sheet" id="checklist">
+    <div class="sheet-inner">
+      <p class="ref">04 · Autoevaluación</p>
+      <h2>Checklist antes de entregar</h2>
+      <ul class="checklist" style="margin-top:14px">
+        <li>Las 5 vistas (negocio, información, aplicaciones, infraestructura, seguridad) están representadas como capas del tablero.</li>
+        <li>Se trazó al menos un hilo completo de negocio de punta a punta por las 5 capas.</li>
+        <li>Ningún elemento relevante queda sin conexión hacia arriba o hacia abajo (ver tabla de verificación de huérfanos).</li>
+        <li>La narrativa explica el "por qué" de las conexiones clave, no solo las describe.</li>
+        <li>Los elementos del tablero son consistentes con los entregables de los talleres anteriores (mismos nombres, mismas decisiones).</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ ARCHIMATE ============ -->
+  <section class="sheet" id="archimate">
+    <div class="sheet-inner">
+      <p class="ref">05 · Para ir más allá</p>
+      <h2>Esto ya es, en esencia, un diagrama ArchiMate</h2>
+      <p class="lede" style="margin-bottom:16px">Mostrar negocio, aplicación y tecnología en una sola vista conectada es exactamente lo que ArchiMate hace de forma nativa (ver la <a href="https://github.com/CesarAVegaF312/AREM-ArchiMate/blob/main/guia_notacion_archimate.md">Guía de Notación ArchiMate</a>). El tablero de capas y el hilo conectado de esta hoja son, literalmente, un diagrama ArchiMate multi-capa — solo que construido con cajas genéricas en vez de con la notación estándar.</p>
+      <div class="callout">
+        <p>Si su equipo construyó el tablero del Taller 7 con la notación ArchiMate en vez de formas libres, este diagrama ya es la vista final que necesita — no hay que redibujar nada dos veces.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>AREM · Módulo 8 · Integración de vistas de arquitectura · Universidad de La Sabana</p>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   Datos: 5 capas de FarmApp + hilo de Compra Online
+   ============================================================ */
+const BANDS = [
+  {id:"biz",   label:"NEGOCIO",         y:14,  h:86,  color:"#14263C"},
+  {id:"app",   label:"APLICACIONES",    y:104, h:86,  color:"#5F7387"},
+  {id:"info",  label:"INFORMACIÓN",     y:194, h:86,  color:"#1C7150"},
+  {id:"infra", label:"INFRAESTRUCTURA", y:284, h:86,  color:"#3B4C5E"},
+  {id:"sec",   label:"SEGURIDAD",       y:374, h:86,  color:"#B4552B"}
+];
+
+const NODES = [
+  // Negocio
+  {id:"compra",     label:"Compra Online",  sub:"proceso",   x:150, y:30,  w:170, h:54, band:"biz"},
+  {id:"prescr",     label:"Prescripción",   sub:"proceso",   x:340, y:30,  w:170, h:54, band:"biz"},
+  {id:"despacho",   label:"Despacho",       sub:"proceso",   x:530, y:30,  w:170, h:54, band:"biz"},
+  // Aplicaciones
+  {id:"appmovil",   label:"App Móvil",            sub:"aplicación", x:150, y:120, w:150, h:54, band:"app"},
+  {id:"ecommerce",  label:"Plataforma E-commerce",sub:"aplicación", x:315, y:120, w:150, h:54, band:"app"},
+  {id:"pos",        label:"Sistema POS",          sub:"aplicación", x:480, y:120, w:150, h:54, band:"app"},
+  {id:"crm",        label:"CRM",                  sub:"aplicación", x:645, y:120, w:150, h:54, band:"app"},
+  // Información
+  {id:"producto",   label:"Producto",   sub:"entidad", x:150, y:210, w:150, h:54, band:"info"},
+  {id:"cliente",    label:"Cliente",    sub:"entidad", x:315, y:210, w:150, h:54, band:"info"},
+  {id:"pedido",     label:"Pedido",     sub:"entidad", x:480, y:210, w:150, h:54, band:"info"},
+  {id:"descuento",  label:"Descuento",  sub:"entidad", x:645, y:210, w:150, h:54, band:"info"},
+  // Infraestructura
+  {id:"servregion", label:"Servidores Regionales",  sub:"infraestructura", x:150, y:300, w:170, h:54, band:"infra"},
+  {id:"nube",       label:"Nube Híbrida",           sub:"infraestructura", x:340, y:300, w:170, h:54, band:"infra"},
+  {id:"bd",         label:"Base de Datos Replicada",sub:"infraestructura", x:530, y:300, w:170, h:54, band:"infra"},
+  // Seguridad
+  {id:"rbac",       label:"Control de acceso por rol",  sub:"control", x:150, y:390, w:170, h:54, band:"sec"},
+  {id:"cifrado",    label:"Cifrado de datos personales", sub:"control", x:340, y:390, w:170, h:54, band:"sec"},
+  {id:"fraude",     label:"Monitoreo de fraude",         sub:"control", x:530, y:390, w:170, h:54, band:"sec"}
+];
+
+const THREAD_NODES = new Set(["compra","ecommerce","appmovil","producto","cliente","pedido","descuento","nube","bd","cifrado","fraude"]);
+
+function cx(n){ return n.x + n.w/2; }
+function nodeById(id){ return NODES.find(n=>n.id===id); }
+
+// conexiones agrupadas tal como narra el Paso 4 de la guía
+const CONNECTIONS = [
+  {
+    id:"cn1", title:"Compra Online → canales de atención",
+    nodes:["compra","ecommerce","appmovil"],
+    paths:[
+      {d:`M${cx(nodeById('compra'))},84 C${cx(nodeById('compra'))},104 ${cx(nodeById('appmovil'))},104 ${cx(nodeById('appmovil'))},120`},
+      {d:`M${cx(nodeById('compra'))},84 C${cx(nodeById('compra'))},106 ${cx(nodeById('ecommerce'))},106 ${cx(nodeById('ecommerce'))},120`}
+    ],
+    chip:{x:300, y:96, w:214, h:22, label:"apoyado en 2 canales"},
+    narrative:"El proceso de Compra Online se apoya en la Plataforma E-commerce y en la App Móvil, priorizadas porque la mayoría de las compras de FarmApp ya ocurren desde dispositivos móviles.",
+    chips:["Compra Online","Plataforma E-commerce","App Móvil"]
+  },
+  {
+    id:"cn2", title:"E-commerce → datos compartidos entre canales",
+    nodes:["ecommerce","producto","cliente","pedido","descuento"],
+    paths:[
+      {d:`M${cx(nodeById('ecommerce'))},174 C${cx(nodeById('ecommerce'))},192 ${cx(nodeById('producto'))},192 ${cx(nodeById('producto'))},210`},
+      {d:`M${cx(nodeById('ecommerce'))},174 L${cx(nodeById('cliente'))},210`},
+      {d:`M${cx(nodeById('ecommerce'))},174 C${cx(nodeById('ecommerce'))},192 ${cx(nodeById('pedido'))},192 ${cx(nodeById('pedido'))},210`},
+      {d:`M${cx(nodeById('ecommerce'))},174 C${cx(nodeById('ecommerce'))},192 ${cx(nodeById('descuento'))},192 ${cx(nodeById('descuento'))},210`}
+    ],
+    chip:{x:300, y:186, w:214, h:22, label:"accede a 4 entidades"},
+    narrative:"Ambas comparten las mismas entidades de información (Producto, Cliente, Pedido, Descuento) para evitar inconsistencias de inventario entre canales.",
+    chips:["Plataforma E-commerce","Producto","Cliente","Pedido","Descuento"]
+  },
+  {
+    id:"cn3", title:"Canales → infraestructura de soporte",
+    nodes:["ecommerce","appmovil","nube","bd"],
+    paths:[
+      {d:`M${cx(nodeById('ecommerce'))},174 C${cx(nodeById('ecommerce'))},230 ${cx(nodeById('nube'))},250 ${cx(nodeById('nube'))},300`},
+      {d:`M${cx(nodeById('appmovil'))},174 C${cx(nodeById('appmovil'))},230 ${cx(nodeById('nube'))-30},250 ${cx(nodeById('nube'))},300`},
+      {d:`M${nodeById('nube').x+nodeById('nube').w},327 L${nodeById('bd').x},327`}
+    ],
+    chip:{x:470, y:272, w:220, h:20, label:"corre sobre nube + BD replicada"},
+    narrative:"Corren sobre la Nube Híbrida con Base de Datos Replicada — decisión tomada en el Taller 4 para tolerar picos de demanda en campañas promocionales.",
+    chips:["Plataforma E-commerce","App Móvil","Nube Híbrida","Base de Datos Replicada"]
+  },
+  {
+    id:"cn4", title:"E-commerce → controles de seguridad",
+    nodes:["ecommerce","cifrado","fraude"],
+    paths:[
+      {d:`M${cx(nodeById('ecommerce'))},174 C${cx(nodeById('ecommerce'))+20},260 ${cx(nodeById('cifrado'))-10},330 ${cx(nodeById('cifrado'))},390`, protege:true},
+      {d:`M${cx(nodeById('ecommerce'))},174 C${cx(nodeById('ecommerce'))+120},260 ${cx(nodeById('fraude'))-40},330 ${cx(nodeById('fraude'))},390`, protege:true}
+    ],
+    chip:{x:520, y:362, w:230, h:20, label:"protege el pago electrónico"},
+    narrative:"El cifrado de datos personales y el monitoreo de fraude se aplican en este punto porque el proceso involucra pago electrónico, el activo más sensible identificado en el Taller 5.",
+    chips:["Plataforma E-commerce","Cifrado de datos personales","Monitoreo de fraude"]
+  }
+];
+
+/* ============================================================
+   Render
+   ============================================================ */
+let mode = "loose", selectedConn = null;
+
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function renderBoard(){
+  let s = `<svg class="board" viewBox="0 0 860 470" role="img" aria-label="Tablero de 5 capas de FarmApp">`;
+
+  // bandas de fondo
+  BANDS.forEach(b=>{
+    s += `<rect x="0" y="${b.y}" width="860" height="${b.h}" fill="${b.color}" opacity="0.07"/>
+      <text class="bandlabel" x="12" y="${b.y+16}" fill="${b.color}">${esc(b.label)}</text>`;
+  });
+
+  // conexiones (debajo de las cajas, para que las que cruzan una banda queden ocultas tras cajas ajenas)
+  if(mode==="traced"){
+    CONNECTIONS.forEach(cn=>{
+      const sel = selectedConn===cn.id;
+      cn.paths.forEach(p=>{
+        s += `<path class="connline ${p.protege?'protege':''} ${sel?'sel':''}" d="${p.d}"/>`;
+      });
+    });
+  }
+
+  // cajas de elementos
+  NODES.forEach(n=>{
+    const band = BANDS.find(b=>b.id===n.band);
+    const inThread = THREAD_NODES.has(n.id);
+    const dim = mode==="traced" && !inThread;
+    const highlighted = mode==="traced" && selectedConn && CONNECTIONS.find(c=>c.id===selectedConn).nodes.includes(n.id);
+    s += `<g class="node-box ${dim?'dim':''}">
+      <rect x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" rx="2" fill="${band.color}" ${highlighted?'class="sel-ring" stroke="#B4552B" stroke-width="3"':''}/>
+      <text class="nlabel" x="${n.x+n.w/2}" y="${n.y+n.h/2-2}" text-anchor="middle" fill="#F2F1EA">${esc(n.label)}</text>
+      <text class="nsub" x="${n.x+n.w/2}" y="${n.y+n.h/2+14}" text-anchor="middle">${esc(n.sub)}</text>
+    </g>`;
+  });
+
+  // chips clicables de conexión (encima de todo)
+  if(mode==="traced"){
+    CONNECTIONS.forEach(cn=>{
+      const sel = selectedConn===cn.id;
+      const c = cn.chip;
+      cn.paths.forEach(p=>{ s += `<path class="connhit" d="${p.d}" data-conn="${cn.id}"/>`; });
+      s += `<g class="hit" tabindex="0" role="button" aria-pressed="${sel}" data-conn="${cn.id}" aria-label="Ver narrativa: ${esc(cn.title)}">
+        <rect x="${c.x}" y="${c.y}" width="${c.w}" height="${c.h}" fill="${sel?'#B4552B':'#FBFAF6'}" stroke="${sel?'#B4552B':'#C9C6B8'}"/>
+        <text class="clabel" x="${c.x+c.w/2}" y="${c.y+14}" text-anchor="middle" fill="${sel?'#F2F1EA':'#3B4C5E'}">${esc(c.label)}</text>
+      </g>`;
+    });
+  }
+
+  s += `</svg>`;
+  document.getElementById("diagram").innerHTML = s;
+
+  document.querySelectorAll('[data-conn]').forEach(el=>{
+    el.addEventListener("click", ()=>selectConn(el.dataset.conn));
+    if(el.tagName.toLowerCase()==="g"){
+      el.addEventListener("keydown", e=>{
+        if(e.key==="Enter"||e.key===" "){ e.preventDefault(); selectConn(el.dataset.conn); }
+      });
+    }
+  });
+}
+
+function selectConn(id){
+  selectedConn = id;
+  renderBoard();
+  const cn = CONNECTIONS.find(c=>c.id===id);
+  const html = `
+    <p class="conntitle">${esc(cn.title)}</p>
+    <div class="connnote">
+      <div class="chips">${cn.chips.map(c=>`<span class="chip">${esc(c)}</span>`).join("")}</div>
+      <p>${esc(cn.narrative)}</p>
+      <p class="src">Tal como está redactado en el Paso 4 de la guía · narrativa de coherencia del hilo de Compra Online.</p>
+    </div>`;
+  document.getElementById("detail").innerHTML = html;
+}
+
+function setMode(next){
+  mode = next;
+  selectedConn = null;
+  document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.mode===mode)));
+  if(mode==="loose"){
+    document.getElementById("modeName").textContent = "Paso 2 · Elementos ubicados, sin conectar";
+    document.getElementById("modeDesc").textContent = "Los 15 elementos de las 5 vistas de FarmApp, transcritos de los talleres 1 a 6 dentro de su capa. Todavía no hay ninguna relación trazada.";
+    document.getElementById("modeFoot").textContent = 'Cambie a "Hilo de Compra Online trazado" para ver cómo un solo proceso de negocio conecta las 5 capas de punta a punta.';
+    document.getElementById("detail").innerHTML = '<div class="empty">Este es el punto de partida del tablero (Paso 2 de la guía): un inventario de elementos por capa, todavía sin relaciones. Active "Hilo de Compra Online trazado" y haga clic en una conexión resaltada para ver por qué existe.</div>';
+  } else {
+    document.getElementById("modeName").textContent = "Paso 3 · Hilo de Compra Online trazado";
+    document.getElementById("modeDesc").textContent = "Los elementos atenuados (Prescripción, Despacho, Sistema POS, CRM, Servidores Regionales, Control de acceso por rol) quedan huérfanos en este hilo: su propio proceso de negocio todavía no se ha trazado.";
+    document.getElementById("modeFoot").textContent = "Haga clic en cualquiera de los 4 recuadros de conexión sobre el diagrama para leer la narrativa real de esa decisión.";
+    document.getElementById("detail").innerHTML = '<div class="empty">Haga clic en un recuadro de conexión (por ejemplo "apoyado en 2 canales") para ver la narrativa de esa relación, tal como está redactada en la guía.</div>';
+  }
+  renderBoard();
+}
+
+document.querySelectorAll('[data-mode]').forEach(btn=>{
+  btn.addEventListener("click", ()=>setMode(btn.dataset.mode));
+});
+
+/* arranque */
+renderBoard();
+</script>
+</body>
+</html>

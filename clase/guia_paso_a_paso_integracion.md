@@ -123,6 +123,8 @@ Se verifica que cada elemento del hilo tenga al menos una conexión hacia la cap
 | Nube Híbrida | Infraestructura | ✅ E-commerce, App Móvil | ✅ Base de Datos Replicada |
 | Cifrado / Monitoreo de fraude | Seguridad | ✅ E-commerce | — |
 
+Para explorar este mismo tablero de forma interactiva —alternando entre capas sueltas e hilo trazado, con narrativa por conexión— vea [`visualizacion-integracion-vistas.html`](visualizacion-integracion-vistas.html).
+
 ---
 
 ## 3. Errores comunes a evitar
