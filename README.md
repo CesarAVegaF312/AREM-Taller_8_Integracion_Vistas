@@ -10,7 +10,7 @@ Integrar todas las vistas arquitectónicas desarrolladas a lo largo del curso (n
 
 Antes de armar el tablero, revise la [**Guía Paso a Paso: Integración de Vistas de Arquitectura**](clase/guia_paso_a_paso_integracion.md). Incluye la metodología de 5 pasos para pasar de un inventario de vistas sueltas a un tablero conectado con narrativa, un ejemplo completo construido paso a paso sobre el caso de FarmApp (incluyendo una tabla para verificar que ningún elemento quede huérfano), y una tabla de errores comunes.
 
-En esta misma sesión se presenta también el método de análisis de riesgos arquitectónicos (presentación [`9. Riesgos_Arquitectonicos_unificado.pptx`](9.%20Riesgos_Arquitectonicos_unificado.pptx), en este repositorio, versión para estudiantes), que se usa en el [Paso 3 del Taller 9](https://github.com/CesarAVegaF312/AREM-Taller_9_Presentacion_Final/blob/main/clase/guia_paso_a_paso_presentacion.md).
+En esta misma sesión se presenta también el método de análisis de riesgos arquitectónicos (presentación [`8. Riesgos_Arquitectonicos_unificado.pptx`](8.%20Riesgos_Arquitectonicos_unificado.pptx), en este repositorio, versión para estudiantes), que se usa en el [Paso 3 del Taller 9](https://github.com/CesarAVegaF312/AREM-Taller_9_Presentacion_Final/blob/main/clase/guia_paso_a_paso_presentacion.md).
 
 ### Versión visual: Tablero de Integración de Vistas
 
