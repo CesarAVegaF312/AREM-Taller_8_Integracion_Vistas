@@ -14,9 +14,7 @@ En esta misma sesión se presenta también el método de análisis de riesgos ar
 
 ### Versión visual: Tablero de Integración de Vistas
 
-[`clase/visualizacion-integracion-vistas.html`](clase/visualizacion-integracion-vistas.html) es una página interactiva autocontenida: un tablero de las 5 capas de FarmApp (negocio, aplicaciones, información, infraestructura, seguridad) que se alterna entre "capas sueltas" (Paso 2 de la guía) y el hilo de negocio **Compra Online** trazado de punta a punta (Paso 3), con la narrativa real de cada conexión al hacer clic sobre ella y la tabla completa de verificación de elementos huérfanos (Paso 5). GitHub no la renderiza interactiva desde la vista de archivo; para verla:
-- Descargue el archivo y ábralo con doble clic (funciona sin conexión, es HTML plano), o
-- Pegue esta URL en [htmlpreview.github.io](https://htmlpreview.github.io/): `https://raw.githubusercontent.com/CesarAVegaF312/AREM-Taller_8_Integracion_Vistas/main/clase/visualizacion-integracion-vistas.html`
+[`clase/visualizacion-integracion-vistas.html`](clase/visualizacion-integracion-vistas.html) es una página interactiva autocontenida: un tablero de las 5 capas de FarmApp (negocio, aplicaciones, información, infraestructura, seguridad) que se alterna entre "capas sueltas" (Paso 2 de la guía) y el hilo de negocio **Compra Online** trazado de punta a punta (Paso 3), con la narrativa real de cada conexión al hacer clic sobre ella y la tabla completa de verificación de elementos huérfanos (Paso 5). Ábrala directamente en el navegador: **[ver la página interactiva](https://cesaravegaf312.github.io/AREM-Taller_8_Integracion_Vistas/clase/visualizacion-integracion-vistas.html)**. También puede descargar el archivo y abrirlo con doble clic; funciona sin conexión.
 
 ## Caso base de referencia: FarmApp (Cadena de Farmacias con E-Commerce)
 
