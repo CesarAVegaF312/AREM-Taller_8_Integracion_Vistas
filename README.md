@@ -72,7 +72,7 @@ taller-08-integracion-vistas/
 ├── clase/
 │   ├── guia_paso_a_paso_integracion.md   # Metodología de 5 pasos y ejemplo guiado
 │   ├── visualizacion-integracion-vistas.html  # Tablero interactivo de FarmApp
-│   ├── tablero-farmapp.drawio
+│   ├── tablero-farmapp.drawio            # Tablero del caso base (FarmApp), a construir en clase
 │   └── notas.md                          # Ver plantillas/plantilla_notas.md
 ├── entrega/
 │   ├── tablero-integrado-cliente.drawio
