@@ -10,13 +10,11 @@ Integrar todas las vistas arquitectónicas desarrolladas a lo largo del curso (n
 
 Antes de armar el tablero, revise la [**Guía Paso a Paso: Integración de Vistas de Arquitectura**](clase/guia_paso_a_paso_integracion.md). Incluye la metodología de 5 pasos para pasar de un inventario de vistas sueltas a un tablero conectado con narrativa, un ejemplo completo construido paso a paso sobre el caso de FarmApp (incluyendo una tabla para verificar que ningún elemento quede huérfano), y una tabla de errores comunes.
 
-En esta misma sesión se presenta también el método de análisis de riesgos arquitectónicos (presentación [`9. Riesgos_Arquitectonicos_unificado.pptx`](9.%20Riesgos_Arquitectonicos_unificado.pptx), en este repositorio, versión para estudiantes), que se usa en el [Paso 3 del Taller 9](https://github.com/CesarAVegaF312/AREM-Taller_9_Presentacion_Final/blob/main/clase/guia_paso_a_paso_presentacion.md).
+En esta misma sesión se presenta también el método de análisis de riesgos arquitectónicos (presentación [`8. Riesgos_Arquitectonicos_unificado.pptx`](8.%20Riesgos_Arquitectonicos_unificado.pptx), en este repositorio, versión para estudiantes), que se usa en el [Paso 3 del Taller 9](https://github.com/CesarAVegaF312/AREM-Taller_9_Presentacion_Final/blob/main/clase/guia_paso_a_paso_presentacion.md).
 
 ### Versión visual: Tablero de Integración de Vistas
 
-[`clase/visualizacion-integracion-vistas.html`](clase/visualizacion-integracion-vistas.html) es una página interactiva autocontenida: un tablero de las 5 capas de FarmApp (negocio, aplicaciones, información, infraestructura, seguridad) que se alterna entre "capas sueltas" (Paso 2 de la guía) y el hilo de negocio **Compra Online** trazado de punta a punta (Paso 3), con la narrativa real de cada conexión al hacer clic sobre ella y la tabla completa de verificación de elementos huérfanos (Paso 5). GitHub no la renderiza interactiva desde la vista de archivo; para verla:
-- Descargue el archivo y ábralo con doble clic (funciona sin conexión, es HTML plano), o
-- Pegue esta URL en [htmlpreview.github.io](https://htmlpreview.github.io/): `https://raw.githubusercontent.com/CesarAVegaF312/AREM-Taller_8_Integracion_Vistas/main/clase/visualizacion-integracion-vistas.html`
+[`clase/visualizacion-integracion-vistas.html`](clase/visualizacion-integracion-vistas.html) es una página interactiva autocontenida: un tablero de las 5 capas de FarmApp (negocio, aplicaciones, información, infraestructura, seguridad) que se alterna entre "capas sueltas" (Paso 2 de la guía) y el hilo de negocio **Compra Online** trazado de punta a punta (Paso 3), con la narrativa real de cada conexión al hacer clic sobre ella y la tabla completa de verificación de elementos huérfanos (Paso 5). Ábrala directamente en el navegador: **[ver la página interactiva](https://cesaravegaf312.github.io/AREM-Taller_8_Integracion_Vistas/clase/visualizacion-integracion-vistas.html)**. También puede descargar el archivo y abrirlo con doble clic; funciona sin conexión.
 
 ## Caso base de referencia: FarmApp (Cadena de Farmacias con E-Commerce)
 
