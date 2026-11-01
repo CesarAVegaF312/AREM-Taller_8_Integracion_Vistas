@@ -62,6 +62,14 @@ Después de la clase, el equipo debe:
 
 ---
 
+## Validación técnica, análisis de casos y tecnología (opcional)
+
+Para revisar la consistencia del tablero con herramientas en vez de a ojo, el equipo puede abrir el modelo integrado en Archi y correr un verificador automático que hace la tabla del Paso 5 (elementos huérfanos, conexión hacia arriba y hacia abajo) y además busca elementos fuera de las vistas y posibles duplicados. No es un ejercicio de programación: el modelo de FarmApp en formato estándar de intercambio de ArchiMate y el verificador ya están listos en [`clase/validacion-tecnica/`](clase/validacion-tecnica/), y el modelo trae a propósito un error típico de integración para practicar. El procedimiento está en la [sección 5 de la guía paso a paso](clase/guia_paso_a_paso_integracion.md#5-validación-técnica-de-la-consistencia-opcional). Lo que se encuentre se documenta en `entrega/informe.md`.
+
+**Análisis de caso real y tecnología.** La [sección 6 de la guía](clase/guia_paso_a_paso_integracion.md#6-análisis-de-caso-real-y-panorama-tecnológico-opcional) analiza la pérdida del Mars Climate Orbiter (NASA, 1999), en la que dos sistemas correctos por separado usaban unidades distintas, y presenta el panorama de herramientas de arquitectura empresarial para mantener integradas las vistas. El equipo analiza un caso del sector de su cliente con la [plantilla de análisis de caso](plantillas/plantilla_analisis_caso.md) en `entrega/analisis-caso.md`.
+
+---
+
 ## Estructura esperada del repositorio
 
 ```text

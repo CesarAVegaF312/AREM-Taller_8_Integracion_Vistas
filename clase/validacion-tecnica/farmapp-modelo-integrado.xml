@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.opengroup.org/xsd/archimate/3.0/"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.opengroup.org/xsd/archimate/3.0/ http://www.opengroup.org/xsd/archimate/3.1/archimate3_Diagram.xsd"
+       identifier="id-model-farmapp">
+  <name xml:lang="es">FarmApp - Modelo integrado (Taller 8, curso AREM)</name>
+  <documentation xml:lang="es">Inventario de las 5 vistas de FarmApp (Paso 2 de la guía) y el hilo Compra Online (Paso 3). Trae a propósito un error típico de integración para practicar la validación: ver la sección 5 de la guía.</documentation>
+
+  <elements>
+    <element identifier="id-compra" xsi:type="BusinessProcess">
+      <name xml:lang="es">Compra Online</name>
+    </element>
+    <element identifier="id-prescripcion" xsi:type="BusinessProcess">
+      <name xml:lang="es">Prescripción</name>
+    </element>
+    <element identifier="id-despacho" xsi:type="BusinessProcess">
+      <name xml:lang="es">Despacho</name>
+    </element>
+    <element identifier="id-appmovil" xsi:type="ApplicationComponent">
+      <name xml:lang="es">App Móvil</name>
+    </element>
+    <element identifier="id-ecommerce" xsi:type="ApplicationComponent">
+      <name xml:lang="es">Plataforma E-commerce</name>
+    </element>
+    <element identifier="id-pos" xsi:type="ApplicationComponent">
+      <name xml:lang="es">Sistema POS</name>
+    </element>
+    <element identifier="id-crm" xsi:type="ApplicationComponent">
+      <name xml:lang="es">CRM</name>
+    </element>
+    <element identifier="id-producto" xsi:type="DataObject">
+      <name xml:lang="es">Producto</name>
+    </element>
+    <element identifier="id-cliente" xsi:type="DataObject">
+      <name xml:lang="es">Cliente</name>
+    </element>
+    <element identifier="id-pedido" xsi:type="DataObject">
+      <name xml:lang="es">Pedido</name>
+    </element>
+    <element identifier="id-descuento" xsi:type="DataObject">
+      <name xml:lang="es">Descuento</name>
+    </element>
+    <element identifier="id-servregion" xsi:type="Node">
+      <name xml:lang="es">Servidores Regionales</name>
+    </element>
+    <element identifier="id-nube" xsi:type="Node">
+      <name xml:lang="es">Nube Híbrida</name>
+    </element>
+    <element identifier="id-ecommerce-t4" xsi:type="ApplicationComponent">
+      <name xml:lang="es">Plataforma Ecommerce</name>
+    </element>
+    <element identifier="id-bd" xsi:type="SystemSoftware">
+      <name xml:lang="es">Base de Datos Replicada</name>
+    </element>
+    <element identifier="id-rbac" xsi:type="Requirement">
+      <name xml:lang="es">Control de acceso por rol</name>
+    </element>
+    <element identifier="id-cifrado" xsi:type="Requirement">
+      <name xml:lang="es">Cifrado de datos personales</name>
+    </element>
+    <element identifier="id-fraude" xsi:type="Requirement">
+      <name xml:lang="es">Monitoreo de fraude</name>
+    </element>
+  </elements>
+
+  <relationships>
+    <relationship identifier="id-r1" source="id-ecommerce" target="id-compra" xsi:type="Serving">
+      <name xml:lang="es">sirve a</name>
+    </relationship>
+    <relationship identifier="id-r2" source="id-appmovil" target="id-compra" xsi:type="Serving">
+      <name xml:lang="es">sirve a</name>
+    </relationship>
+    <relationship identifier="id-r3" source="id-ecommerce" target="id-producto" xsi:type="Access">
+      <name xml:lang="es">accede a</name>
+    </relationship>
+    <relationship identifier="id-r4" source="id-ecommerce" target="id-cliente" xsi:type="Access">
+      <name xml:lang="es">accede a</name>
+    </relationship>
+    <relationship identifier="id-r5" source="id-ecommerce" target="id-pedido" xsi:type="Access">
+      <name xml:lang="es">accede a</name>
+    </relationship>
+    <relationship identifier="id-r6" source="id-ecommerce" target="id-descuento" xsi:type="Access">
+      <name xml:lang="es">accede a</name>
+    </relationship>
+    <relationship identifier="id-r7" source="id-nube" target="id-ecommerce-t4" xsi:type="Assignment">
+      <name xml:lang="es">asignado a</name>
+    </relationship>
+    <relationship identifier="id-r8" source="id-nube" target="id-appmovil" xsi:type="Assignment">
+      <name xml:lang="es">asignado a</name>
+    </relationship>
+    <relationship identifier="id-r9" source="id-nube" target="id-bd" xsi:type="Composition">
+      <name xml:lang="es">contiene</name>
+    </relationship>
+    <relationship identifier="id-r10" source="id-ecommerce" target="id-cifrado" xsi:type="Realization">
+      <name xml:lang="es">cumple</name>
+    </relationship>
+    <relationship identifier="id-r11" source="id-ecommerce" target="id-fraude" xsi:type="Realization">
+      <name xml:lang="es">cumple</name>
+    </relationship>
+  </relationships>
+
+  <views>
+    <diagrams>
+      <view identifier="id-view-compra" xsi:type="Diagram">
+        <name xml:lang="es">Hilo Compra Online</name>
+        <node identifier="n-compra" elementRef="id-compra" xsi:type="Element" x="280" y="20" w="160" h="55" />
+        <node identifier="n-appmovil" elementRef="id-appmovil" xsi:type="Element" x="140" y="140" w="160" h="55" />
+        <node identifier="n-ecommerce" elementRef="id-ecommerce" xsi:type="Element" x="420" y="140" w="160" h="55" />
+        <node identifier="n-producto" elementRef="id-producto" xsi:type="Element" x="20" y="260" w="160" h="55" />
+        <node identifier="n-cliente" elementRef="id-cliente" xsi:type="Element" x="200" y="260" w="160" h="55" />
+        <node identifier="n-pedido" elementRef="id-pedido" xsi:type="Element" x="380" y="260" w="160" h="55" />
+        <node identifier="n-descuento" elementRef="id-descuento" xsi:type="Element" x="560" y="260" w="160" h="55" />
+        <node identifier="n-nube" elementRef="id-nube" xsi:type="Element" x="140" y="380" w="160" h="55" />
+        <node identifier="n-ecommerce-t4" elementRef="id-ecommerce-t4" xsi:type="Element" x="620" y="140" w="160" h="55" />
+        <node identifier="n-bd" elementRef="id-bd" xsi:type="Element" x="420" y="380" w="160" h="55" />
+        <node identifier="n-cifrado" elementRef="id-cifrado" xsi:type="Element" x="280" y="500" w="160" h="55" />
+        <node identifier="n-fraude" elementRef="id-fraude" xsi:type="Element" x="520" y="500" w="160" h="55" />
+        <connection identifier="c-r1" relationshipRef="id-r1" xsi:type="Relationship" source="n-ecommerce" target="n-compra" />
+        <connection identifier="c-r2" relationshipRef="id-r2" xsi:type="Relationship" source="n-appmovil" target="n-compra" />
+        <connection identifier="c-r3" relationshipRef="id-r3" xsi:type="Relationship" source="n-ecommerce" target="n-producto" />
+        <connection identifier="c-r4" relationshipRef="id-r4" xsi:type="Relationship" source="n-ecommerce" target="n-cliente" />
+        <connection identifier="c-r5" relationshipRef="id-r5" xsi:type="Relationship" source="n-ecommerce" target="n-pedido" />
+        <connection identifier="c-r6" relationshipRef="id-r6" xsi:type="Relationship" source="n-ecommerce" target="n-descuento" />
+        <connection identifier="c-r7" relationshipRef="id-r7" xsi:type="Relationship" source="n-nube" target="n-ecommerce-t4" />
+        <connection identifier="c-r8" relationshipRef="id-r8" xsi:type="Relationship" source="n-nube" target="n-appmovil" />
+        <connection identifier="c-r9" relationshipRef="id-r9" xsi:type="Relationship" source="n-nube" target="n-bd" />
+        <connection identifier="c-r10" relationshipRef="id-r10" xsi:type="Relationship" source="n-ecommerce" target="n-cifrado" />
+        <connection identifier="c-r11" relationshipRef="id-r11" xsi:type="Relationship" source="n-ecommerce" target="n-fraude" />
+      </view>
+    </diagrams>
+  </views>
+</model>
