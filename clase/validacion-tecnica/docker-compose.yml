@@ -1,0 +1,13 @@
+# Verificación de consistencia del modelo integrado (Taller 8).
+# No necesita conexión a internet ni instalar nada además de Docker.
+#
+#   docker compose run --rm verificar                                  # modelo del caso base
+#   docker compose run --rm verificar /trabajo/mi-modelo.xml           # otro modelo de esta carpeta
+services:
+  verificar:
+    image: python:3.12-alpine
+    working_dir: /trabajo
+    volumes:
+      - ./:/trabajo:ro
+    entrypoint: ["python", "/trabajo/verificar_consistencia.py"]
+    command: ["/trabajo/farmapp-modelo-integrado.xml"]
